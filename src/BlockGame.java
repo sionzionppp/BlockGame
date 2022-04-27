@@ -155,7 +155,7 @@ public class BlockGame {
 					else if(e.getKeyCode()==KeyEvent.VK_RIGHT) {
 						System.out.println("Pressed Right Key");
 						barXTarget +=20;
-						if(bar.x > barXTarget) { //repeate key pressed...
+						if(bar.x > barXTarget) { //repeat key pressed...
 							barXTarget = bar.x;
 						}
 					}
