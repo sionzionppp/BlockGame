@@ -39,6 +39,22 @@ public class BlockGame {
 			int width = BALL_WIDTH;
 			int height = BALL_HEIGHT;
 			
+			
+			Point getCenter() {
+				return new Point(x+(BALL_WIDTH/2),y+(BALL_HEIGHT/2));
+			}
+			Point getBottomCenter() {
+				return new Point(x+(BALL_WIDTH/2),y+(BALL_HEIGHT));
+			}
+			Point getTopCenter() {
+				return new Point(x+(BALL_WIDTH/2),y);
+			}
+			Point getLeftCenter() {
+				return new Point(x,y+(BALL_HEIGHT/2));
+			}
+			Point getRightCenter() {
+				return new Point(x+(BALL_WIDTH),y+(BALL_HEIGHT/2));
+			}
 		}
 		static class Bar{
 			int x = CANVAS_WIDTH/2 - BAR_WIDTH/2;
@@ -172,18 +188,91 @@ public class BlockGame {
 				@Override
 				public void actionPerformed(ActionEvent e) { //Timer Event
 					movement();
-					checkCollision();//충돌방지
-					checkCollisionBlock();
+					checkCollision();//충돌방지 벽과 바
+					checkCollisionBlock();//50개의 블록에 충돌
 					myPanel.repaint();//redraw!
 				}
 			});
-			timer.start();
+			timer.start();//start Timer!
 		}
 		public void movement() {
+			if(bar.x<barXTarget) {
+				bar.x += 5;
+			}else if(bar.x > barXTarget) {
+				bar.x -= 5;
+			}
 			
+			if(dir==0) { //0:Up-Right
+				ball.x += ballSpeed;
+				ball.y -= ballSpeed;
+			}else if(dir==1) {//1: Down-Right
+				ball.x += ballSpeed;
+				ball.y += ballSpeed;
+				
+			}else if(dir==2) {//2:Up-left
+				ball.x -= ballSpeed;
+				ball.y -= ballSpeed;
+				
+			}else if(dir==3) {//3:Down-Left
+				ball.x -= ballSpeed;
+				ball.y += ballSpeed;
+			
+			}
 		}
+		
+		public boolean duplRect(Rectangle rect1,Rectangle rect2) {
+			return rect1.intersects(rect2);//check two Rect is Duplicated!
+		}
+		
 		public void checkCollision(){
-			
+			if(dir==0) { //0:Up-Right
+				//wall
+				if(ball.y <0) { //wall upper
+					dir = 1;
+				}
+				if(ball.x>CANVAS_WIDTH-BALL_WIDTH) {//wall right
+					dir = 2;
+				}
+				//Bar
+				//none
+			}else if(dir==1) {//1: Down-Right
+				//wall
+				if(ball.y>CANVAS_HEIGHT-BALL_HEIGHT-BALL_HEIGHT) {//wall bottom
+					dir = 0;
+				}
+				if(ball.x>CANVAS_WIDTH-BALL_WIDTH) {//wall right
+					dir = 3;
+				}
+				//Bar
+				if(ball.getBottomCenter().y >= bar.y) {
+					if(duplRect(new Rectangle(ball.x,ball.y,ball.width,ball.height),
+							    new Rectangle(bar.x,bar.y,bar.width,bar.height)) ) {
+						dir = 0;
+					}
+				}
+				
+				
+				
+				
+				
+			}else if(dir==2) {//2:Up-left
+				//wall
+				if(ball.y <0) { //wall upper
+					dir = 3;
+				}
+				if(ball.x <0) {//wall left
+					dir = 0;
+				}
+				//Bar none
+			}else if(dir==3) {//3:Down-Left
+				//wall
+				if(ball.y > CANVAS_HEIGHT-BALL_HEIGHT-BALL_HEIGHT) {//wall bottom
+					dir = 2;
+				}
+				if(ball.x<0) { //wall left
+					dir = 1;
+				}
+			}
 		}
 		public void checkCollisionBlock(){
 			
