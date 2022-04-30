@@ -239,7 +239,15 @@ public class BlockGame {
 				//wall
 				if(ball.y>CANVAS_HEIGHT-BALL_HEIGHT-BALL_HEIGHT) {//wall bottom
 					dir = 0;
+				
+				
+				//game reset
+				dir = 0;
+				ball.x = CANVAS_WIDTH/2 - BALL_WIDTH/2;
+				ball.y = CANVAS_HEIGHT/2 - BALL_HEIGHT/2;
+				score = 0;
 				}
+					
 				if(ball.x>CANVAS_WIDTH-BALL_WIDTH) {//wall right
 					dir = 3;
 				}
@@ -248,36 +256,114 @@ public class BlockGame {
 					if(duplRect(new Rectangle(ball.x,ball.y,ball.width,ball.height),
 							    new Rectangle(bar.x,bar.y,bar.width,bar.height)) ) {
 						dir = 0;
+					
 					}
+			
 				}
-				
-				
-				
-				
-				
-			}else if(dir==2) {//2:Up-left
-				//wall
-				if(ball.y <0) { //wall upper
-					dir = 3;
-				}
-				if(ball.x <0) {//wall left
-					dir = 0;
-				}
-				//Bar none
-			}else if(dir==3) {//3:Down-Left
-				//wall
-				if(ball.y > CANVAS_HEIGHT-BALL_HEIGHT-BALL_HEIGHT) {//wall bottom
-					dir = 2;
-				}
-				if(ball.x<0) { //wall left
-					dir = 1;
+				else if(dir==2) {//2:Up-left
+					//wall
+					if(ball.y <0) { //wall upper
+						dir = 3;
+					}
+					if(ball.x <0) {//wall left
+						dir = 0;
+					}
+					//Bar none
+				}else if(dir==3) {//3:Down-Left
+					//wall
+					if(ball.y > CANVAS_HEIGHT-BALL_HEIGHT-BALL_HEIGHT) {//wall bottom
+						dir = 2;
+						
+						//game reset
+						dir = 0;
+						ball.x = CANVAS_WIDTH/2 - BALL_WIDTH/2;
+						ball.y = CANVAS_HEIGHT/2 - BALL_HEIGHT/2;
+						score = 0;
+					}			
+					if(ball.x <0) { //wall left
+						dir = 1;
+					}
+					//Bar
+					if(ball.getBottomCenter().y >= bar.y) {
+						if(duplRect(new Rectangle(ball.x,ball.y,ball.width,ball.height),
+								   new Rectangle(bar.x,bar.y,bar.width,bar.height))) {
+							dir = 2;
+						}
+					}
+						
 				}
 			}
 		}
-		public void checkCollisionBlock(){
+		public void checkCollisionBlock(){ //블록에 대한 충돌처리
+			//0 : Up-Right 1:Down-Right 2 : Up-Left 3 : Down-Left
 			
-		}
-	}	
+			for(int i=0;i<BLOCK_ROWS;i++) {
+				for(int j=0;j<BLOCK_COLUMNS;j++) {
+					Block block =blocks[i][j];
+					if(block.isHidden == false) {
+						if(dir == 0) { //0 : Up-Right
+							if(duplRect(new Rectangle(ball.x,ball.y,ball.width,ball.height),
+								    	new Rectangle(block.x,block.y,block.width,block.height)) ) {
+							if(ball.x >block.x + 2 &&
+								ball.getRightCenter().x <= block.x + block.width - 2) {
+								//block bottom collision
+								dir = 1;
+							}else {
+								//block left collision
+								dir =2;
+							}
+							block.isHidden = true;
+							}
+						}
+						else if(dir == 1) { //1:Down-Right 
+								if(duplRect(new Rectangle(ball.x,ball.y,ball.width,ball.height),
+									    	new Rectangle(block.x,block.y,block.width,block.height)) ) {
+								if(ball.x >block.x + 2 &&
+									ball.getRightCenter().x <= block.x + block.width - 2) {
+									//block top collision
+									dir = 0;
+								}else {
+									//block left collision
+									dir =3;
+								}
+								block.isHidden = true;
+								}
+							}
+						}
+						else if(dir == 2) { //2 : Up-Left
+								if(duplRect(new Rectangle(ball.x,ball.y,ball.width,ball.height),
+									    	new Rectangle(block.x,block.y,block.width,block.height)) ) {
+								if(ball.x >block.x + 2 &&
+									ball.getRightCenter().x <= block.x + block.width - 2) {
+									//block bottom collision
+									dir = 3;
+								}else {
+									//block left collision
+									dir =0;
+								}
+								block.isHidden = true;
+								}
+							}
+							else if(dir == 3) { //3 : Down-Left
+									if(duplRect(new Rectangle(ball.x,ball.y,ball.width,ball.height),
+										    	new Rectangle(block.x,block.y,block.width,block.height)) ) {
+									if(ball.x >block.x + 2 &&
+										ball.getRightCenter().x <= block.x + block.width - 2) {
+										//block top collision
+										dir = 2;
+									}else {
+										//block right collision
+										dir =1;
+									}
+									block.isHidden = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		
+	
 	
 	public static void main(String[] args) {
 		new MyFrame("Block Game");
