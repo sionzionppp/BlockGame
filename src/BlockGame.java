@@ -294,7 +294,7 @@ public class BlockGame {
 				}
 			}
 		}
-		public void checkCollisionBlock(){ //블록에 대한 충돌처리
+		public void checkCollisionBlock(){ //블록충돌
 			//0 : Up-Right 1:Down-Right 2 : Up-Left 3 : Down-Left
 			
 			for(int i=0;i<BLOCK_ROWS;i++) {
