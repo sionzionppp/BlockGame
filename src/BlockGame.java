@@ -31,6 +31,7 @@ public class BlockGame {
 		static int barXTarget = bar.x;//Target Value - interpolation
 		static int dir = 0;//0 : Up-Right 1:Down-Right 2 : Up-Left 3 : Down-Left
 		static int ballSpeed = 5;
+		static boolean isGameFinish = false;
 		
 		
 		static class Ball{
@@ -113,6 +114,10 @@ public class BlockGame {
 					g2d.setColor(Color.white);
 					g2d.setFont(new Font("TimerRoman",Font.BOLD,20));
 					g2d.drawString("score : "+score,CANVAS_WIDTH/2-30,25);
+					if(isGameFinish) {
+						g2d.setColor(Color.red);
+						g2d.drawString("Game Finished!", CANVAS_WIDTH/2 - 55, 50);
+					}
 					
 					//draw ball
 					g2d.setColor(Color.white);
@@ -134,6 +139,7 @@ public class BlockGame {
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
 			initData();
+			
 			myPanel = new MyPanel();
 			this.add("Center",myPanel);
 			
@@ -191,10 +197,32 @@ public class BlockGame {
 					checkCollision();//충돌방지 벽과 바
 					checkCollisionBlock();//50개의 블록에 충돌
 					myPanel.repaint();//redraw!
+					
+					isGameFinish();
+				
+	
 				}
 			});
 			timer.start();//start Timer!
 		}
+	
+	public void isGameFinish() {
+		//Game success!
+		int count = 0;
+		for(int i=0; i<BLOCK_ROWS;i++) {
+			for(int j = 0; j<BLOCK_COLUMNS;j++) {
+				Block block = blocks[i][j];
+				if(block.isHidden)
+					count++;
+			}
+		}
+		if(count == BLOCK_ROWS * BLOCK_COLUMNS) {
+			//Game Finished!
+			//timer.stop();
+			isGameFinish = true;
+		}
+	}
+		
 		public void movement() {
 			if(bar.x<barXTarget) {
 				bar.x += 5;
@@ -260,7 +288,7 @@ public class BlockGame {
 					}
 			
 				}
-				else if(dir==2) {//2:Up-left
+			}else if(dir==2) {//2:Up-left
 					//wall
 					if(ball.y <0) { //wall upper
 						dir = 3;
@@ -292,7 +320,6 @@ public class BlockGame {
 					}
 						
 				}
-			}
 		}
 		public void checkCollisionBlock(){ //블록충돌
 			//0 : Up-Right 1:Down-Right 2 : Up-Left 3 : Down-Left
@@ -313,8 +340,19 @@ public class BlockGame {
 								dir =2;
 							}
 							block.isHidden = true;
-							}
+							if(block.color==0) {
+								score +=10;
+							}else if(block.color ==1) {
+								score +=20;
+							}else if(block.color ==2) {
+								score +=30;
+							}else if(block.color ==3) {
+								score +=40;
+							}else if(block.color ==4) {
+								score +=50;
+							}					
 						}
+					}
 						else if(dir == 1) { //1:Down-Right 
 								if(duplRect(new Rectangle(ball.x,ball.y,ball.width,ball.height),
 									    	new Rectangle(block.x,block.y,block.width,block.height)) ) {
@@ -327,7 +365,18 @@ public class BlockGame {
 									dir =3;
 								}
 								block.isHidden = true;
-								}
+								if(block.color==0) {
+									score +=10;
+								}else if(block.color ==1) {
+									score +=20;
+								}else if(block.color ==2) {
+									score +=30;
+								}else if(block.color ==3) {
+									score +=40;
+								}else if(block.color ==4) {
+									score +=50;
+								}	
+								
 							}
 						}
 						else if(dir == 2) { //2 : Up-Left
@@ -342,8 +391,19 @@ public class BlockGame {
 									dir =0;
 								}
 								block.isHidden = true;
-								}
+								if(block.color==0) {
+									score +=10;
+								}else if(block.color ==1) {
+									score +=20;
+								}else if(block.color ==2) {
+									score +=30;
+								}else if(block.color ==3) {
+									score +=40;
+								}else if(block.color ==4) {
+									score +=50;
+								}	
 							}
+						}
 							else if(dir == 3) { //3 : Down-Left
 									if(duplRect(new Rectangle(ball.x,ball.y,ball.width,ball.height),
 										    	new Rectangle(block.x,block.y,block.width,block.height)) ) {
@@ -356,14 +416,24 @@ public class BlockGame {
 										dir =1;
 									}
 									block.isHidden = true;
+									if(block.color==0) {
+										score +=10;
+									}else if(block.color ==1) {
+										score +=20;
+									}else if(block.color ==2) {
+										score +=30;
+									}else if(block.color ==3) {
+										score +=40;
+									}else if(block.color ==4) {
+										score +=50;
+									}	
 								}
 							}
 						}
 					}
 				}
-			}
-		
-	
+			}	
+	}	
 	
 	public static void main(String[] args) {
 		new MyFrame("Block Game");
